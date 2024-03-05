@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vote App</title>
+</head>
+<body>
+    <h1>Vote for your favorite option</h1>
+    <button onclick="vote('Option A')">Option A</button>
+    <button onclick="vote('Option B')">Option B</button>
+
+    <h2>Vote Counts</h2>
+    <div id="voteCounts">Loading vote counts...</div>
+
+    <script>
+        // Function to cast a vote
+        function vote(option) {
+            fetch('http://54.80.186.217:5000/vote', { // Update with the EC2 instance IP and port
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ option }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(`Vote for ${data.option} successful!`);
+                getVoteCounts(); // Refresh vote counts after voting
+            })
+            .catch((error) => console.error('Error:', error));
+        }
+
+        // Function to get and display vote counts
+        function getVoteCounts() {
+            fetch('http://localhost:5000/votes') // Update with the EC2 instance IP and port
+            .then(response => response.json())
+            .then(data => {
+                const countsElement = document.getElementById('voteCounts');
+                countsElement.innerHTML = ''; // Clear current counts
+                data.forEach(vote => {
+                    countsElement.innerHTML += `${vote.option}: ${vote.votes}<br>`;
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('voteCounts').innerHTML = 'Failed to load vote counts.';
+            });
+        }
+
+        // Get initial vote counts on page load
+        window.onload = getVoteCounts;
+    </script>
+</body>
+</html>
