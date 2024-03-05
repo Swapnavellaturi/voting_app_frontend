@@ -14,7 +14,7 @@
     <script>
         // Function to cast a vote
         function vote(option) {
-            fetch('http://54.80.186.217:5000/vote', { // Update with the EC2 instance IP and port
+            fetch('http://localhost:5000/vote', { // Update with the EC2 instance IP and port
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
